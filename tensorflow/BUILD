@@ -33,7 +33,8 @@ load(
 )
 
 package(
-    default_visibility = [":internal"],
+    # default_visibility = [":internal"],
+    default_visibility = ["//visibility:public"], # change visibility
     licenses = ["notice"],  # Apache 2.0
 )
 
