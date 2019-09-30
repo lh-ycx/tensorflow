@@ -6,8 +6,8 @@ tf_cc_binary(
     name = "model",
     srcs = [
         "model.cc",
-	"data_set.h",
-	"data_set.cc"
+	    "data_set.h",
+	    "data_set.cc"
     ],
     deps = [
         "//tensorflow/cc:gradients",
@@ -16,5 +16,4 @@ tf_cc_binary(
         "//tensorflow/cc:client_session",
         "//tensorflow/core:tensorflow"
     ],
-    # visibility = ["//tensorflow/cc",]
 )
