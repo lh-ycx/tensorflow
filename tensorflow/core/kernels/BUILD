@@ -24,6 +24,7 @@ package_group(
         "//tensorflow/...",
         "//tensorflow_text/...",
         "//third_party/car/...",
+        "//xinmei/rnn_dict/...",
     ],
 )
 
@@ -145,6 +146,7 @@ tf_kernel_library(
         "slice_op.h",
         "strided_slice_op.h",
         "strided_slice_op_impl.h",
+        # "//tensorflow/core/kernels:headers"
     ],
     gpu_srcs = [
         "slice_op.h",
@@ -166,6 +168,7 @@ tf_kernel_library(
         "//tensorflow/core:framework",
         "//tensorflow/core:lib",
         "//third_party/eigen3",
+        "//tensorflow/core/kernels:headers",
     ],
 )
 
@@ -679,6 +682,7 @@ cc_library(
         ":variable_ops",
         "//tensorflow/core:framework",
         "//tensorflow/core:lib",
+        ":headers",
     ],
 )
 
@@ -1782,7 +1786,10 @@ cc_library(
 
 tf_kernel_library(
     name = "dense_update_functor",
-    srcs = ["dense_update_functor.cc"],
+    srcs = [
+        "dense_update_functor.cc",
+        # "dense_update_functor.h",
+        ],
     hdrs = ["dense_update_functor.h"],
     gpu_srcs = [
         "dense_update_functor.h",
@@ -1792,6 +1799,7 @@ tf_kernel_library(
         "//tensorflow/core:framework",
         "//tensorflow/core:lib",
         "//third_party/eigen3",
+        "//tensorflow/core/kernels:headers"
     ],
     alwayslink = 0,
 )
@@ -6331,6 +6339,7 @@ cc_library(
         "@fft2d",
         "@gemmlowp",
         "@protobuf_archive//:protobuf",
+        "//tensorflow/core/kernels:headers",
     ],
     alwayslink = 1,
 )
@@ -7708,4 +7717,23 @@ tf_cc_shared_object(
         ":kernel_platform_strings",
         "//tensorflow/core:all_kernels_impl",
     ],
+)
+
+
+cc_library(
+    name = "headers",
+    hdrs = [
+        "dense_update_functor.h",
+        "redux_functor.h",
+        "inplace_ops_functor.h",
+        "random_op_cpu.h",
+        "topk_op.h",
+        "function_ops.h",
+        "tile_ops_impl.h",
+        "tile_ops_cpu_impl.h",
+        "strided_slice_op_impl.h",
+        "slice_op_cpu_impl.h",
+        "no_op.h",
+    ],
+    visibility = ["//visibility:public"],
 )

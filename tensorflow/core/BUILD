@@ -70,12 +70,13 @@ package_group(
         "//quality/webanswers/brain/tokenization/custom_tf_ops/kernels/...",
     ],
 )
+package(default_visibility = ["//visibility:public"])
 
-package(default_visibility = [
-    ":dependency_whitelist",
-    "//tensorflow:internal",
-    "//tensorflow_models:__subpackages__",
-])
+# package(default_visibility = [
+#     ":dependency_whitelist",
+#     "//tensorflow:internal",
+#     "//tensorflow_models:__subpackages__",
+# ])
 
 licenses(["notice"])  # Apache 2.0
 
@@ -353,9 +354,10 @@ cc_library(
 )
 
 cc_library(
+    visibility = ["//visibility:public"],
     name = "framework_bounds_check",
     hdrs = ["framework/bounds_check.h"],
-    visibility = ["//tensorflow/core/kernels:friends"],
+    # visibility = ["//tensorflow/core/kernels:friends"],
     deps = [
         ":platform_base",
         "//third_party/eigen3",

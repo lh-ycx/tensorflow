@@ -7,7 +7,12 @@ load("//tensorflow:tensorflow.bzl",
      "if_android",
      "if_not_mobile")
 
+# exports_files([
+#    "version_script.lds",
+# ])
+
 LINKER_SCRIPT = ":android_version_script.lds"
+# LINKER_SCRIPT = ":version_script.lds"
 
 cc_binary(
     name = "librnn_dict.so",
@@ -40,7 +45,7 @@ cc_binary(
         "-llog",
         "-lz",
         "-z defs",
-        "-Wl,--version-script", LINKER_SCRIPT,
+        "-Wl,--version-script,$(location {})".format(LINKER_SCRIPT),
         "-Wl,--wrap=abort",
     ]),
     linkshared = 1,
@@ -48,7 +53,7 @@ cc_binary(
             "//xinmei/quantized_graph_loader:quantized_graph_proto_cc",
         ] + if_android([
             "@gemmlowp//:gemmlowp",
-            "//tensorflow/core:android_tensorflow_lib_selective_registration",
+            "//tensorflow/core:android_tensorflow_lib_lite",
             LINKER_SCRIPT])
         + if_not_mobile([
             "//tensorflow/cc:cc_ops",
@@ -102,13 +107,12 @@ cc_binary(
         "-z defs",
         # "-Wl,--wrap=abort",
         "-Wl,--gc-sections",
-        "-Wl,--version-script",
-        LINKER_SCRIPT,
+        "-Wl,--version-script,$(location {})".format(LINKER_SCRIPT),
     ],
     linkshared = 1,
     deps = [
         "@gemmlowp//:gemmlowp",
-        "//tensorflow/core:android_tensorflow_lib_selective_registration",
+        "//tensorflow/core:android_tensorflow_lib_lite",
         # "//tensorflow/core:android_deeptype_lib",
         # "//tensorflow/core/kernels:android_tensorflow_kernels_deeptype",
         LINKER_SCRIPT,
@@ -145,16 +149,16 @@ cc_binary(
         "-z defs",
         # "-Wl,--wrap=abort",
         "-Wl,--gc-sections",
-        "-Wl,--version-script",
-        LINKER_SCRIPT,
+        "-Wl,--version-script,$(location {})".format(LINKER_SCRIPT),
     ],
     linkstatic = 1,
     # linkshared = 1,
     deps = [
         "@gemmlowp//:gemmlowp",
-        "//tensorflow/core:android_tensorflow_lib_selective_registration",
+        "//tensorflow/core:android_tensorflow_lib_lite",
         # "//tensorflow/core:android_deeptype_lib",
         # "//tensorflow/core/kernels:android_tensorflow_kernels_deeptype",
+        "//tensorflow/core/kernels:headers",
         LINKER_SCRIPT,
     ],
 )
@@ -212,7 +216,7 @@ filegroup(
         "//tensorflow/core/kernels:bias_op.cc",
         "//tensorflow/core/kernels:bias_op.h",
         "//tensorflow/core/kernels:bias_op_gpu.h",
-        "//tensorflow/core/kernels:bounds_check.h",
+        "//tensorflow/core/kernels:bounds_check",
         "//tensorflow/core/kernels:concat_lib.h",
         "//tensorflow/core/kernels:concat_lib_cpu.cc",
         "//tensorflow/core/kernels:concat_lib_cpu.h",
@@ -221,8 +225,8 @@ filegroup(
         "//tensorflow/core/kernels:constant_op.h",
         "//tensorflow/core/kernels:control_flow_ops.cc",
         "//tensorflow/core/kernels:control_flow_ops.h",
-        "//tensorflow/core/kernels:cuda_device_array.h",
-        "//tensorflow/core/kernels:cuda_device_array_gpu.h",
+        "//tensorflow/core/kernels:gpu_device_array.h",
+        "//tensorflow/core/kernels:gpu_device_array_gpu.h",
         "//tensorflow/core/kernels:cwise_op_add_1.cc",
         "//tensorflow/core/kernels:cwise_op_greater.cc",
         "//tensorflow/core/kernels:cwise_op_floor_mod.cc",
@@ -241,8 +245,8 @@ filegroup(
         "//tensorflow/core/kernels:cwise_ops_common.h",
         "//tensorflow/core/kernels:cwise_ops_gradients.h",
         "//tensorflow/core/kernels:cwise_ops_sycl_common.h",
-        "//tensorflow/core/kernels:dense_update_ops.cc",
-        "//tensorflow/core/kernels:dense_update_ops.h",
+        # "//tensorflow/core/kernels:dense_update_ops.cc",
+        "//tensorflow/core/kernels:dense_update_ops",
         "//tensorflow/core/kernels:fill_functor.cc",
         "//tensorflow/core/kernels:fill_functor.h",
         "//tensorflow/core/kernels:gather_functor.cc",
@@ -270,8 +274,8 @@ filegroup(
         "//tensorflow/core/kernels:shape_ops.h",
         "//tensorflow/core/kernels:slice_op.cc",
         "//tensorflow/core/kernels:slice_op.h",
-        "//tensorflow/core/kernels:softmax_op.cc",
-        "//tensorflow/core/kernels:softmax_op.h",
+        # "//tensorflow/core/kernels:softmax_op.cc",
+        "//tensorflow/core/kernels:softmax_op",
         "//tensorflow/core/kernels:softmax_op_functor.h",
         "//tensorflow/core/kernels:split_lib.h",
         "//tensorflow/core/kernels:split_lib_cpu.cc",
@@ -310,5 +314,8 @@ filegroup(
         "//tensorflow/core/kernels:save_restore_tensor.h",
         "//tensorflow/core/kernels:save_restore_tensor.cc",
         "//tensorflow/core/kernels:save_restore_v2_ops.cc",
+        "//tensorflow/cc:array_ops",
+        # "//tensorflow/core:ops/array_ops.cc",
+        "//tensorflow/core:ops/array_ops.h",
     ],
 )

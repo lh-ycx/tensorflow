@@ -19,6 +19,8 @@ limitations under the License.
 #include "tensorflow/core/kernels/stateful_random_ops_cpu_gpu.h"
 #include "tensorflow/core/kernels/training_op_helpers.h"
 #include "tensorflow/core/lib/random/random.h"
+#include "tensorflow/core/kernels/dense_update_functor.h"
+#include "tensorflow/core/kernels/inplace_ops_functor.h"
 
 namespace tensorflow {
 

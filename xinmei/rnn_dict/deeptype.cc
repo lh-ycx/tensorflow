@@ -9,9 +9,32 @@
 #include "deeptype.h"
 #include "utils.h"
 
+#define  LOG_TO_LOGCAT false
+
+#if LOG_TO_LOGCAT
+#include <android/log.h>
+#define  LOG_TAG    "rnn_dict_test"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#else
+#define  LOGI(...)  printf(__VA_ARGS__)
+#endif
+
 using namespace tensorflow;
 
 namespace {
+
+    inline void printGraphInfo(GraphDef graph) {
+      LOGI("Start to print graph info\n");
+      std::set<std::string> node_types;
+      for (int i = 0; i < graph.node_size(); i ++) {
+        NodeDef node = graph.node(i);
+        // LOGI("N%d: %s %s\n", i, node.name().c_str(), node.op().c_str());
+        node_types.insert(node.op());
+      }
+      for (auto op : node_types)
+        LOGI("Node type: %s\n", op.c_str());
+    }
+
     template<class TFlat>
     inline std::vector<std::pair<int, float>> topK(const TFlat &flat, int topN) {
       std::vector<std::pair<int, float>> top;
@@ -377,7 +400,7 @@ void DeepType::train_online(const int *ids, size_t wordCount, size_t letterCount
     size_t logits_chunk_size = sizeof(float) * mLogits[0].dim_size(1);
     for (int i = 0; i < idCount; i ++) {
       const void* temp_ptr = mLogits[i].tensor_data().data();
-      memcpy(logits_ptr + i * logits_chunk_size, temp_ptr, logits_chunk_size);
+      memcpy((long*)logits_ptr + i * logits_chunk_size, temp_ptr, logits_chunk_size);
     }
     // This way is too slow
     // for (int i = 0; i < idCount; i ++)
@@ -392,7 +415,7 @@ void DeepType::train_online(const int *ids, size_t wordCount, size_t letterCount
     size_t sm_chunk_size = sizeof(float) * mSmInputs[0].dim_size(1);
     for (int i = 0; i < idCount; i ++) {
       const void* temp_ptr = mSmInputs[i].tensor_data().data();
-      memcpy(sm_ptr + i * sm_chunk_size, temp_ptr, sm_chunk_size);
+      memcpy((long*)sm_ptr + i * sm_chunk_size, temp_ptr, sm_chunk_size);
     }
     inputs.push_back(std::make_pair(prefix + mSmInputName, sm_tensor));
   }

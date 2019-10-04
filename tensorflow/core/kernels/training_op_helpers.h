@@ -22,6 +22,7 @@ limitations under the License.
 #include "tensorflow/core/kernels/dense_update_functor.h"
 #include "tensorflow/core/kernels/variable_ops.h"
 
+
 namespace tensorflow {
 
 // Must be called before performing a sparse operation on a variable. Ensures
